@@ -1,0 +1,3 @@
+/home/vitaly/park/sem01/deepB_remake/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/vitaly/park/sem01/deepB_remake/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/vitaly/park/sem01/deepB_remake/cmake-build-debug/CMakeFiles/deepB_remake.dir

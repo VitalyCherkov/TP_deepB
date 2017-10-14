@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <wchar.h>
 #include <stddef.h>
 
 // --------------------------------------------------------------------
@@ -93,13 +91,12 @@ void clear_stack(stack_node** head) {
 char* grow_line_buffer(char* line, size_t* cur_buffer_size) {
     if (!line || !cur_buffer_size)
         return NULL;
-
-    char* temp_line = (char*) realloc(line, *cur_buffer_size * 2);
+    *cur_buffer_size *= 2;
+    char* temp_line = (char*) realloc(line, *cur_buffer_size);
     if (!temp_line) {
         free(line);
         return NULL;
     }
-    *cur_buffer_size *= 2;
     return temp_line;
 }
 
@@ -380,9 +377,6 @@ int do_arithmetic_step(stack_node** numbers, stack_node** operators, char* prev_
 }
 
 void compute_opening_br_case(stack_node** numbers, stack_node** operators) {
-    double top_num = 0.000;
-    double prev_num = 0.000;
-
     char prev_op = ' ';
     if (top_operator(operators, &prev_op) == EOE_NO_ONE_POPPED)
         return;
@@ -394,24 +388,12 @@ void compute_opening_br_case(stack_node** numbers, stack_node** operators) {
 }
 
 void compute_priority_case(stack_node** numbers, stack_node** operators, char top_op) {
-    double top_num = 0.000;
-    double prev_num = 0.000;
-
     char prev_op = ' ';
     if (top_operator(operators, &prev_op) == EOE_NO_ONE_POPPED)
         return;
 
     while (*operators && get_priority(prev_op) <= get_priority(top_op)) {
-        double result_num = 0.0;
-        if (top_numbers(numbers, &prev_num, &top_num) != EOE_BOTH_POPPED)
-            return;
-
-        if (process_operation(&result_num, prev_num, top_num, prev_op) == EXIT_FAILURE)
-            return;
-
-        *numbers = push_data(*numbers, &result_num, sizeof(double));
-
-        if (top_operator(operators, &prev_op) == EOE_NO_ONE_POPPED)
+        if(!do_arithmetic_step(numbers, operators, &prev_op))
             return;
     }
 
